@@ -22,36 +22,12 @@ jobs:
           flutter-version: '3.22.0'
           channel: 'stable'
 
+      - name: Fix build.gradle
+        run: |
+          printf 'plugins {\n    id "com.android.application"\n    id "kotlin-android"\n    id "dev.flutter.flutter-gradle-plugin"\n}\nandroid {\n    namespace "com.moviesbz.app"\n    compileSdk 34\n    compileOptions {\n        sourceCompatibility JavaVersion.VERSION_17\n        targetCompatibility JavaVersion.VERSION_17\n    }\n    kotlinOptions {\n        jvmTarget = "17"\n    }\n    defaultConfig {\n        applicationId "com.moviesbz.app"\n        minSdk 21\n        targetSdk 34\n        versionCode 1\n        versionName "1.0"\n    }\n    buildTypes {\n        release {\n            signingConfig signingConfigs.debug\n            minifyEnabled false\n            shrinkResources false\n        }\n    }\n}\nflutter {\n    source "../.."\n}\n' > android/app/build.gradle
+
       - name: Get dependencies
         run: flutter pub get
-
-      - name: Create settings.gradle.kts
-        run: |
-          FLUTTER_SDK=$(flutter --version --machine 2>/dev/null | python3 -c "import sys,json; print(json.load(sys.stdin).get('flutterRoot',''))" 2>/dev/null || echo "$HOME/hostedtoolcache/flutter/stable-3.22.0-x64")
-          cat > android/settings.gradle.kts << EOF
-          pluginManagement {
-              val flutterSdkPath = run {
-                  val properties = java.util.Properties()
-                  file("local.properties").inputStream().use { properties.load(it) }
-                  val flutterSdkPath = properties.getProperty("flutter.sdk")
-                  require(flutterSdkPath != null) { "flutter.sdk not set in local.properties" }
-                  flutterSdkPath
-              }
-              includeBuild("\$flutterSdkPath/packages/flutter_tools/gradle")
-              repositories {
-                  google()
-                  mavenCentral()
-                  gradlePluginPortal()
-              }
-          }
-          plugins {
-              id("dev.flutter.flutter-plugin-loader") version "1.0.0"
-              id("com.android.application") version "8.1.0" apply false
-              id("org.jetbrains.kotlin.android") version "1.9.10" apply false
-          }
-          include(":app")
-          EOF
-          rm -f android/settings.gradle
 
       - name: Build APK
         run: flutter build apk --release --no-shrink
