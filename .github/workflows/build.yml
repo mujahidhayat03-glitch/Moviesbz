@@ -26,13 +26,6 @@ jobs:
         run: flutter pub get
 
       - name: Build APK
-        run: |
-          cd android
-          rm -f settings.gradle settings.gradle.kts build.gradle
-          flutter build apk --release --no-shrink
-        working-directory: ${{ github.workspace }}
-
-      - name: Build APK simple
         run: flutter build apk --release --no-shrink
 
       - uses: actions/upload-artifact@v4
