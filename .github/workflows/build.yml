@@ -19,51 +19,20 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.6'
+          flutter-version: '3.22.0'
           channel: 'stable'
 
-      - name: Install dependencies
+      - name: Get dependencies
         run: flutter pub get
 
-      - name: Fix Gradle files
-        run: |
-          cat > android/app/build.gradle << 'GRADLE'
-          plugins {
-              id "com.android.application"
-              id "kotlin-android"
-              id "dev.flutter.flutter-gradle-plugin"
-          }
-          android {
-              namespace "com.moviesbz.app"
-              compileSdk 34
-              compileOptions {
-                  sourceCompatibility JavaVersion.VERSION_17
-                  targetCompatibility JavaVersion.VERSION_17
-              }
-              kotlinOptions {
-                  jvmTarget = '17'
-              }
-              defaultConfig {
-                  applicationId "com.moviesbz.app"
-                  minSdk 21
-                  targetSdk 34
-                  versionCode 1
-                  versionName "1.0"
-              }
-              buildTypes {
-                  release {
-                      signingConfig signingConfigs.debug
-                      minifyEnabled false
-                      shrinkResources false
-                  }
-              }
-          }
-          flutter {
-              source '../..'
-          }
-          GRADLE
-
       - name: Build APK
+        run: |
+          cd android
+          rm -f settings.gradle settings.gradle.kts build.gradle
+          flutter build apk --release --no-shrink
+        working-directory: ${{ github.workspace }}
+
+      - name: Build APK simple
         run: flutter build apk --release --no-shrink
 
       - uses: actions/upload-artifact@v4
