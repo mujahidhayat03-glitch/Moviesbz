@@ -25,35 +25,13 @@ jobs:
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Create settings.gradle.kts
+      - name: Create local.properties
         run: |
-          FLUTTER_SDK=$(flutter sdk-path 2>/dev/null || flutter --version --machine 2>&1 | grep -o '"flutterRoot":"[^"]*"' | cut -d'"' -f4 || echo "")
-          if [ -z "$FLUTTER_SDK" ]; then
-            FLUTTER_SDK=$(dirname $(dirname $(which flutter)))
-          fi
-          echo "Flutter SDK: $FLUTTER_SDK"
-          rm -f settings.gradle.kts android/settings.gradle android/settings.gradle.kts
-          cat > settings.gradle.kts << ENDOFFILE
-          pluginManagement {
-              val flutterSdkPath = run {
-                  val properties = java.util.Properties()
-                  file("android/local.properties").takeIf { it.exists() }?.inputStream()?.use { properties.load(it) }
-                  properties.getProperty("flutter.sdk") ?: "$FLUTTER_SDK"
-              }
-              includeBuild("\$flutterSdkPath/packages/flutter_tools/gradle")
-              repositories {
-                  google()
-                  mavenCentral()
-                  gradlePluginPortal()
-              }
-          }
-          plugins {
-              id("dev.flutter.flutter-plugin-loader") version "1.0.0"
-              id("com.android.application") version "8.1.0" apply false
-              id("org.jetbrains.kotlin.android") version "1.9.10" apply false
-          }
-          include(":app")
-          ENDOFFILE
+          FLUTTER_PATH=$(which flutter)
+          FLUTTER_SDK=$(dirname $(dirname $FLUTTER_PATH))
+          echo "flutter.sdk=$FLUTTER_SDK" > android/local.properties
+          echo "sdk.dir=$ANDROID_HOME" >> android/local.properties
+          cat android/local.properties
 
       - name: Build APK
         run: flutter build apk --release --no-shrink
