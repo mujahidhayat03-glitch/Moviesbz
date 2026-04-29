@@ -22,9 +22,12 @@ jobs:
           flutter-version: '3.22.0'
           channel: 'stable'
 
-      - name: Fix build.gradle
+      - name: Clean conflicting gradle files
         run: |
-          printf 'plugins {\n    id "com.android.application"\n    id "kotlin-android"\n    id "dev.flutter.flutter-gradle-plugin"\n}\nandroid {\n    namespace "com.moviesbz.app"\n    compileSdk 34\n    compileOptions {\n        sourceCompatibility JavaVersion.VERSION_17\n        targetCompatibility JavaVersion.VERSION_17\n    }\n    kotlinOptions {\n        jvmTarget = "17"\n    }\n    defaultConfig {\n        applicationId "com.moviesbz.app"\n        minSdk 21\n        targetSdk 34\n        versionCode 1\n        versionName "1.0"\n    }\n    buildTypes {\n        release {\n            signingConfig signingConfigs.debug\n            minifyEnabled false\n            shrinkResources false\n        }\n    }\n}\nflutter {\n    source "../.."\n}\n' > android/app/build.gradle
+          rm -f settings.gradle.kts
+          rm -f android/settings.gradle.kts
+          rm -f android/settings.gradle
+          ls -la android/
 
       - name: Get dependencies
         run: flutter pub get
