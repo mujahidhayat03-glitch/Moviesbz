@@ -1,0 +1,31 @@
+{
+  "project_info": {
+    "project_number": "474404528227",
+    "firebase_url": "https://moviesbz-1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "moviesbz-1",
+    "storage_bucket": "moviesbz-1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474404528227:android:ce9bf44a9e401dc29ad856",
+        "android_client_info": {
+          "package_name": "com.company.Moviesbx"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCp5E8A2qgd6j22NPe-09pG3Uf8US5jP04"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}m > Project moviesbz-1 > Settings > Android app (package: com.moviesbz.app)"
+}
